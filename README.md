@@ -9,7 +9,7 @@ point, with a bit of work to make it *slightly* generic.
 
 Install with:
 
-    go install zgo.at/wtff
+    go install zgo.at/wtff/cmd/wtff@latest
 
 Commands ("wtff" or "wtff help" for more info):
 
