@@ -19,6 +19,20 @@ import (
 // originally came from two different scripts and got merged here, but it's kind
 // of redundant.
 
+// TODO: doesn't seem to work for ogg/opus files? ffmetadata is just blank.
+// Instead of using ffmetadata, get it with:
+//
+// ffprobe -show_streams
+//   format.tags (mp4, mp3, flac)
+//   streams[0].tags (ogg, opus)
+//
+// And write with:
+//   ffmpeg -i input.mp4 -c copy
+//     -metadata title="..."
+//     -metadata artist="..."
+//     -metadata other="..."
+//     output.mp4
+
 type (
 	Meta struct {
 		Comment          string            `toml:"-"`

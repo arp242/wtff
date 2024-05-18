@@ -169,14 +169,9 @@ func (p ProbeFile) String() string {
 
 // Probe gets an overview of streams for this file.
 func Probe(ctx context.Context, file string) (ProbeFile, error) {
-	out, err := exec.CommandContext(ctx, "ffprobe",
-		"-hide_banner",
-		"-v", "quiet",
+	out, err := exec.CommandContext(ctx, "ffprobe", "-hide_banner", "-v", "quiet",
 		"-of", "json=compact=1",
-		"-show_error",
-		"-show_format",
-		"-show_streams",
-		"-show_chapters",
+		"-show_error", "-show_format", "-show_streams", "-show_chapters",
 		file).CombinedOutput()
 	if err != nil {
 		var outj struct {

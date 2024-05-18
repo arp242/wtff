@@ -14,7 +14,7 @@ wtff is a frontend for ffmpeg. https://github.com/arp242/wtff
 
 Commands:
     info         [-m] [file] [file...]
-    meta         [-w] [-t toml-file] [file]
+    meta         [-w] [-s] [-t toml-file] [file]
     mb           [-artist artist] [-album album] [-r release-id] [file]
     cat          [-f] [-o output] [input...]
     cut          [-o output] [input] [start] [verb] [stop]
@@ -44,13 +44,16 @@ Commands:
             Flags:
                 -m, -meta      Display more metadata.
 
-    meta [-w] [-t toml-file] [file]
+    meta [-w] [-s] [-t toml-file] [file]
             Edit metadata as a TOML file with $EDITOR. Keys can be deleted to
             remove that data.
             Writes to temp file in the file's directory, and overwrites the
             original on success.
 
             Flags:
+                -s, -strip     Strip all metadata except chapters; does not open
+                               $EDITOR and immediately writes. If given twice
+                               also remove all chapters.
                 -t, -toml      Start $EDITOR with the given TOML file, instead
                                of populating from metadata from the input file.
                 -w, -write     Write without starting $EDITOR; only makes sense
@@ -160,15 +163,19 @@ func main() {
 		var (
 			tomlFile = f.String("", "t", "toml-file")
 			write    = f.Bool(false, "w", "write")
+			strip    = f.IntCounter(0, "s", "strip")
 		)
 		zli.F(f.Parse())
 		if write.Set() && !tomlFile.Set() {
 			zli.Fatalf("-w needs -t")
 		}
+		if strip.Int() > 0 && (write.Set() || tomlFile.Set()) {
+			zli.Fatalf("-s can't be combined with -w or -t")
+		}
 		if len(f.Args) != 1 {
 			zli.Fatalf(`"meta" command needs exactly one input file`)
 		}
-		cmdErr = cmdMeta(f.Args[0], tomlFile.String(), !write.Bool())
+		cmdErr = cmdMeta(f.Args[0], tomlFile.String(), !write.Bool(), strip.Int())
 	case "mb":
 		var (
 			artist  = f.String("", "artist")

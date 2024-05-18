@@ -18,7 +18,35 @@ import (
 )
 
 // TODO: allow editing per-stream meta
-func cmdMeta(input, tomlFile string, editFile bool) error {
+func cmdMeta(input, tomlFile string, editFile bool, strip int) error {
+	if strip > 0 {
+		base, ext := zfilepath.SplitExt(input)
+		outTmp, err := os.CreateTemp(filepath.Dir(input), filepath.Base(base)+"-wtff-meta-*."+ext)
+		if err != nil {
+			return err
+		}
+		defer os.Remove(outTmp.Name())
+
+		var m wtff.Meta
+		if strip == 1 {
+			chap, err := wtff.ReadMeta(context.Background(), input)
+			if err != nil {
+				return err
+			}
+			m.Chapters = chap.Chapters
+		}
+		err = wtff.WriteMeta(context.Background(), m, input, outTmp.Name())
+		if err != nil {
+			return err
+		}
+
+		err = os.Rename(outTmp.Name(), input)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	var (
 		oktoRm    = true
 		tomlMeta  string
@@ -177,7 +205,7 @@ func cmdMb(input, artist, album, release string) error {
 		return err
 	}
 
-	return cmdMeta(input, fp.Name(), true)
+	return cmdMeta(input, fp.Name(), true, 0)
 }
 
 type (
