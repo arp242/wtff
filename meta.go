@@ -55,6 +55,14 @@ type (
 	}
 )
 
+func (m Meta) IsZero() bool {
+	return m.Title == "" && m.Artist == "" && m.Date == "" && len(m.Chapters) == 0 && len(m.Other) == 0
+}
+
+func (m Meta) IsZeroExceptChapters() bool {
+	return m.Title == "" && m.Artist == "" && m.Date == "" && len(m.Other) == 0
+}
+
 func (m MetaChapter) StartSecs() int {
 	return int(time.Duration(m.Start * (1_000_000_000 / m.Timebase[1])).Seconds())
 }
