@@ -12,6 +12,10 @@ import (
 	"zgo.at/zstd/zbyte"
 )
 
+func (t Time) MarshalText() ([]byte, error) {
+	return []byte(t.String()), nil
+}
+
 func (t *Time) UnmarshalText(b []byte) error {
 	f, err := strconv.ParseFloat(string(b), 64)
 	if err != nil {

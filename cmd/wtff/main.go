@@ -13,7 +13,7 @@ var usageBrief = `
 wtff is a frontend for ffmpeg. https://github.com/arp242/wtff
 
 Commands:
-    info         [-m] [file] [file...]
+    info         [-m] [-j] [file] [file...]
     meta         [-w] [-s] [-t toml-file] [file]
     mb           [-artist artist] [-album album] [-r release-id] [file]
     cat          [-f] [-o output] [input...]
@@ -37,12 +37,13 @@ wtff is a frontend for ffmpeg. https://github.com/arp242/wtff
 Use the -v flag with any command to print the ffmpeg invocations to stderr.
 
 Commands:
-    info [-m] [file] [file...]
+    info [-m] [-j] [file] [file...]
             Show list of streams and chapters for all given files. This is
             similar to ffprobe, but more compat and excludes most metadata.
 
             Flags:
                 -m, -meta      Display more metadata.
+                -j, -json      Output as JSON.
 
     meta [-w] [-s] [-t toml-file] [file]
             Edit metadata as a TOML file with $EDITOR. Keys can be deleted to
@@ -153,12 +154,13 @@ func main() {
 	case "info":
 		var (
 			meta = f.Bool(false, "m", "meta")
+			json = f.Bool(false, "j", "json")
 		)
 		zli.F(f.Parse())
 		if len(f.Args) == 0 {
 			zli.Fatalf(`"info" command needs at least one file`)
 		}
-		cmdErr = cmdInfo(meta.Bool(), f.Args...)
+		cmdErr = cmdInfo(meta.Bool(), json.Bool(), f.Args...)
 	case "meta":
 		var (
 			tomlFile = f.String("", "t", "toml-file")

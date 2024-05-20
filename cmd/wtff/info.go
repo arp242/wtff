@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -11,7 +12,27 @@ import (
 	"zgo.at/zstd/zmap"
 )
 
-func cmdInfo(meta bool, files ...string) error {
+func cmdInfo(meta, jsonFlag bool, files ...string) error {
+	if jsonFlag {
+		fmt.Print("[")
+		for i, file := range files {
+			if i > 0 {
+				fmt.Println(",")
+			}
+			info, err := wtff.Probe(context.Background(), file)
+			if err != nil {
+				return err
+			}
+			j, err := json.MarshalIndent(info, "", "  ")
+			if err != nil {
+				return err
+			}
+			fmt.Print(string(j))
+		}
+		fmt.Println("]")
+		return nil
+	}
+
 	multi := len(files) > 1
 
 	for i, file := range files {
