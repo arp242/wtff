@@ -23,7 +23,7 @@ func Cut(ctx context.Context, input, output string, start, stop Time) error {
 		// "-stats",
 		"-ss", start.String(), // Stream before opening
 		"-i", input, // Input
-		"-to", stop.String(), // End time
+		"-to", stop.String(), // Duration
 		"-avoid_negative_ts", "make_zero",
 		"-map_metadata", "0",
 		"-movflags", "+faststart",

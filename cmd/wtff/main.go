@@ -213,7 +213,7 @@ func main() {
 		if len(f.Args) != 4 {
 			zli.Fatalf("usage: wtff cut [-o output] [input] [start] [verb] [stop]")
 		}
-		cmdErr = cmdCut(f.Args[0], output.String(), f.Args[2], f.Args[2], f.Args[4])
+		cmdErr = cmdCut(f.Args[0], output.String(), f.Args[2], f.Args[1], f.Args[3])
 	case "subs":
 		subCmd, err := f.ShiftCommand("add", "rm", "save", "replace", "print", "sync", "burn")
 		zli.F(err)

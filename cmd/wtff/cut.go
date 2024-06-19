@@ -24,9 +24,9 @@ func cmdCut(input, output, verb, startStr, endStr string) error {
 	default:
 		return fmt.Errorf("invalid: %q", verb)
 	case "to":
-		// Do nothing.
+		stop = wtff.Time{stop.Duration - start.Duration}
 	case "for":
-		stop = wtff.Time{start.Duration + stop.Duration}
+		// Do nothing.
 	}
 	return wtff.Cut(context.Background(), input, output, start, stop)
 }
